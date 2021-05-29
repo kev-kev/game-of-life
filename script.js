@@ -16,15 +16,18 @@ window.addEventListener('load', () => {
     [11, 10]
   ]);
   
-  setInterval(() => {
-    game.tick();
-  }, 1000);
+  // setInterval(() => {
+  //   game.tick();
+  // }, 1000);
+  
+  // game.tick();
 
 });
 
 // Start w/ a seed
 // Tick every 2 seconds or something
 class Game {
+  // Create the data of the squares and then set it 
   constructor(){
     this.squares = [];
   }
@@ -45,23 +48,39 @@ class Game {
     //   const newSquare = new Square(coord[0], coord[1], window.ctx);
     //   newSquare.fill("pink");
     // });
-    // this.tick();
   }
 
   tick() {
     console.log("ticking");
     console.log(this.squares);
     // check for rules on the squares
+    
     this.squares.forEach(square => {
       const filledNeighbors = square.getFilledNeighbors();
+      console.log(square.filled, "filled");
+      console.log(filledNeighbors, "neighbors");
       if (square.filled && (filledNeighbors === 2 || filledNeighbors === 3)) {
+        console.log("survive");
         // survives
       } else if (!square.filled && filledNeighbors === 3) {
+        console.log("fill");
         square.fill();
       } else {
+        console.log("clear");
         square.clear();
       }
     });
+  }
+  
+  isCoordinateFilled(x, y) {
+    const imageData = window.ctx.getImageData(
+        x * SQUARE_SIZE,
+        y * SQUARE_SIZE,
+        1,
+        1
+    );
+      
+    return imageData["data"]["0"] > 0;
   }
 }
 
@@ -70,9 +89,9 @@ class Square {
     this.x = x;
     this.y = y;
     this.neighborCoords = this.calculateNeighborCoords();
+    this.filled = false;
   }
-  // properties: int x, int y, bool filled
-  // array neighbors (of Squares)
+
   fill(color = "pink") {
     window.ctx.fillStyle = color;
     window.ctx.fillRect(
@@ -81,6 +100,7 @@ class Square {
       SQUARE_SIZE,
       SQUARE_SIZE
     );
+    this.filled = true;
   }
   
   clear() {
@@ -90,6 +110,7 @@ class Square {
       SQUARE_SIZE,
       SQUARE_SIZE
     );
+    this.filled = false;
   }
   
   getFilledNeighbors() {
