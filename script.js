@@ -5,34 +5,38 @@ This is your site JavaScript code - you can add interactivity and carry out proc
 // 500x500 canvas
 // 20 x 20 squares of 25 by 25 px
 const SQUARE_SIZE = 25;
-
-window.addEventListener('load', () => {
-  const canvas = document.getElementById("myCanvas");
-  window.ctx = canvas.getContext("2d");
-  const game = (new Game());
-  game.start([
+const SEED_2 = [
     [9, 9],
     [10, 10],
     [10, 11],
     [11, 9],
     [11, 10]
-  ]);
+  ];
+const SEED_PULSAR = [
+  []
+];
+
+window.addEventListener('load', () => {
+  const canvas = document.getElementById("myCanvas");
+  window.ctx = canvas.getContext("2d");
+  const game = (new Game());
+  game.start(SEED_2);
   
   // setTimout(() => {
   
 // })
-  // setInterval(() => {
-  //   game.tick();
-  // }, 1000);
-
-//   game.tick();
-//   game.tick();
-//   game.tick();
-//   game.tick();
-
-  for(let i = 0 ; i < 2; i++ ) {
+  setInterval(() => {
     game.tick();
-  }
+  }, 1000);
+
+//   game.tick();
+//   game.tick();
+//   game.tick();
+//   game.tick();
+
+//   for(let i = 0 ; i < 2; i++ ) {
+//     game.tick();
+//   }
 });
 
 // Start w/ a seed
@@ -50,15 +54,6 @@ class Game {
       this.squares.push(square);
     });
     this.drawSquares();
-    
-    // our tester
-    // const square = new Square(2, 2, window.ctx);
-    // square.fill();
-    // console.log(square.neighborCoords);
-    // square.neighborCoords.forEach(coord => {
-    //   const newSquare = new Square(coord[0], coord[1], window.ctx);
-    //   newSquare.fill("pink");
-    // });
   }
   
   shouldFillSquare(x, y, isFilled) {
@@ -91,14 +86,12 @@ class Game {
 
   tick() {
     this.squaresCopy = [];
-    // console.log("Start of tick: ", this.squaresCopy.length);
 
     this.squares.forEach(square => {
       const copy = {x: square.x, y: square.y, filled: false};
       copy.filled = this.shouldFillSquare(square.x, square.y, square.filled);
       if (copy.filled) {
         if (!containsSquareAlready(copy, this.squaresCopy)) {
-          console.log("Doesn't contain", JSON.stringify(copy));
           this.squaresCopy.push(copy);
         }
       }
@@ -109,21 +102,12 @@ class Game {
         neighborCopy.filled = this.shouldFillSquare(neighborCopy.x, neighborCopy.y, neighborCopy.filled);
         if (neighborCopy.filled) {
           if (!containsSquareAlready(neighborCopy, this.squaresCopy)) {
-          // console.log("Doesn't contain", JSON.stringify(neighborCopy));
             this.squaresCopy.push(neighborCopy);
           }
         }
       });
     });
-    
 
-    // Get unique squaresCopy
-    // console.log(JSON.stringify([... new Set(this.squaresCopy.map(square => square.coord))]));
-
-    // console.log(JSON.stringify(this.squaresCopy));
-
-    console.log("End of tick: "  + this.squaresCopy.length);
-    // console.log(this.squares.length);
     this.clearSquares();
     this.squares = this.squaresCopy;
     this.drawSquares();
@@ -131,14 +115,15 @@ class Game {
 }
 
   const containsSquareAlready = (obj, squaresCopy) => {
+    let contains = false;
     squaresCopy.forEach(square => {
       // console.log("Comparing: ", JSON.stringify(obj), JSON.stringify(square));
       if (square.x === obj.x && square.y == obj.y) {
-        // console.log("It's true");
-        return true;
+        contains = true;
       }
     });
-    return false;
+    // contains === false ? console.log("me falsey") : console.log("me truthy");
+    return contains;
   }
 
   const fillSquare = (x, y, color = "pink") => {
