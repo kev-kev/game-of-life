@@ -11,42 +11,34 @@ const SQUARE_SIZE = 25;
 class Game {
   constructor(ctx){
     this.ctx = ctx;
-    this.squares = {};
-    // new Square() based off the seed
-    
+    this.squares = [];
   }
 
-  start() {
-    for(let i = 0; i < 20; i++) {
-      for (let j = 0; j < 20; j++) {
-        
-      }
-    }
+  start(seedCoords) {
+    seedCoords.forEach(coord => {
+      const square = new Square(coord[0], coord[1], this.ctx);
+      square.fill();
+      this.squares.push(square);
+    });
     
-    // fillSquare(0, 0);
-    // fillSquare(475, 475);
-    // original
-    const square = new Square(2, 2, this.ctx);
-    square.fill();
-    console.log(square.neighborCoords);
-    // neighbors
-//     (new Square(1, 1, this.ctx)).fill("pink");
-//     (new Square(1, 3, this.ctx)).fill("pink");
-//     (new Square(3, 1, this.ctx)).fill("pink");
-//     (new Square(3, 3, this.ctx)).fill("pink");
-    
-//     (new Square(1, 2, this.ctx)).fill("hotpink");
-//     (new Square(2, 1, this.ctx)).fill("hotpink");
-//     (new Square(2, 3, this.ctx)).fill("hotpink");
-//     (new Square(3, 2, this.ctx)).fill("hotpink").clear();
+    // our tester
+    // const square = new Square(2, 2, this.ctx);
+    // square.fill();
+    // console.log(square.neighborCoords);
+    // square.neighborCoords.forEach(coord => {
+    //   const newSquare = new Square(coord[0], coord[1], this.ctx);
+    //   newSquare.fill("pink");
+    // });
   }
-  
-  getSquare(x, y) {
-    // returns the Square at x y
-  }
-  
+
   tick() {
     // check for rules on the squares
+    this.squares.forEach(square => {
+      const filledNeighbors = square.getFilledNeighbors();
+      if (filledNeighbors === 2 || filledNeighbors === 3) {
+        // survives
+      } 
+    });
   }
 }
 
@@ -103,5 +95,9 @@ window.addEventListener('load', () => {
   const canvas = document.getElementById("myCanvas");
   const ctx = canvas.getContext("2d");
   console.log("test", ctx);
-  (new Game(ctx)).start();
+  (new Game(ctx)).start([
+    [9, 10],
+    [10, 10],
+    [11, 10]
+  ]);
 });
