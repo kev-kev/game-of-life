@@ -19,6 +19,7 @@ const SEED_PULSAR = [
   [6, 14],
   [6, 15],
   [6, 16],
+  [11, 16],
   [11, 8],
   [11, 9],
   [11, 10],
@@ -37,6 +38,35 @@ const SEED_PULSAR = [
   [18, 14],
   [18, 15],
   [18, 16],
+  
+  [8, 6],
+  [9, 6],
+  [10, 6],
+  [14, 6],
+  [15, 6],
+  [16, 6],
+  
+  [8, 11],
+  [9, 11],
+  [10, 11],
+  [14, 11],
+  [15, 11],
+  [16, 11],
+  
+  [8, 13],
+  [9, 13],
+  [10, 13],
+  [14, 13],
+  [15, 13],
+  [16, 13],
+  
+  [8, 18],
+  [9, 18],
+  [10, 18],
+  [14, 18],
+  [15, 18],
+  [16, 18],
+  
 ];
 
 window.addEventListener('load', () => {
@@ -45,18 +75,9 @@ window.addEventListener('load', () => {
   const game = (new Game());
   game.start(SEED_PULSAR);
   
-  // setTimout(() => {
+// //   
+  setInterval(() => game.tick(), 200);
   
-// })
-  // setInterval(() => {
-  //   game.tick();
-  // }, 1000);
-
-  game.tick();
-//   game.tick();
-//   game.tick();
-//   game.tick();
-
 //   for(let i = 0 ; i < 2; i++ ) {
 //     game.tick();
 //   }
