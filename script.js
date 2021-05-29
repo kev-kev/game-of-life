@@ -53,7 +53,7 @@ class Square {
   constructor(x, y, ctx) {
     this.x = x;
     this.y = y;
-    this.neighbors = this.getNeighbors();
+    this.neighborCoords = this.getNeighbors();
     this.ctx = ctx;
   }
   // properties: int x, int y, bool filled
@@ -84,9 +84,16 @@ class Square {
   }
   
   getNeighbors() {
-    this.neighbors = [
-      
-    ];
+    this.neighborCoords = [];
+    
+    for(let y = this.y - 1; y < y + 2; y ++) {
+      for(let x = this.x - 1; x < x + 2; x++) {
+        if (x == this.x && y == this.y) {
+          continue
+        }
+        if (x <)
+      }
+    }
   }
 }
 
