@@ -6,36 +6,51 @@ This is your site JavaScript code - you can add interactivity and carry out proc
 // 20 x 20 squares of 25 by 25 px
 const SQUARE_SIZE = 25;
 
+window.addEventListener('load', () => {
+  const canvas = document.getElementById("myCanvas");
+  window.ctx = canvas.getContext("2d");
+  const game = (new Game());
+  game.start([
+    [9, 10],
+    [10, 10],
+    [11, 10]
+  ]);
+  
+  setInterval(() => {
+    game.tick();
+  }, 1000);
+
+});
+
 // Start w/ a seed
 // Tick every 2 seconds or something
 class Game {
-  constructor(ctx){
-    this.ctx = ctx;
+  constructor(){
     this.squares = [];
   }
 
   start(seedCoords) {
     seedCoords.forEach(coord => {
-      const square = new Square(coord[0], coord[1], this.ctx);
+      const square = new Square(coord[0], coord[1], window.ctx);
       square.fill();
-      square.getFilledNeighbors();
       this.squares.push(square);
     });
     
     
-    
     // our tester
-    // const square = new Square(2, 2, this.ctx);
+    // const square = new Square(2, 2, window.ctx);
     // square.fill();
     // console.log(square.neighborCoords);
     // square.neighborCoords.forEach(coord => {
-    //   const newSquare = new Square(coord[0], coord[1], this.ctx);
+    //   const newSquare = new Square(coord[0], coord[1], window.ctx);
     //   newSquare.fill("pink");
     // });
-    // setTimeout(this.tick(), 1000);
+    // this.tick();
   }
 
   tick() {
+    console.log("ticking");
+    console.log(this.squares);
     // check for rules on the squares
     this.squares.forEach(square => {
       const filledNeighbors = square.getFilledNeighbors();
@@ -51,17 +66,16 @@ class Game {
 }
 
 class Square {
-  constructor(x, y, ctx) {
+  constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.ctx = ctx;
     this.neighborCoords = this.calculateNeighborCoords();
   }
   // properties: int x, int y, bool filled
   // array neighbors (of Squares)
   fill(color = "pink") {
-    this.ctx.fillStyle = color;
-    this.ctx.fillRect(
+    window.ctx.fillStyle = color;
+    window.ctx.fillRect(
       this.x * SQUARE_SIZE,
       this.y * SQUARE_SIZE,
       SQUARE_SIZE,
@@ -70,33 +84,45 @@ class Square {
   }
   
   clear() {
-    this.ctx.clearRect(
+    window.ctx.clearRect(
       this.x * SQUARE_SIZE,
       this.y * SQUARE_SIZE,
+      SQUARE_SIZE,
       SQUARE_SIZE
     );
   }
   
   getFilledNeighbors() {
     let count = 0;
+    
+    
+//       const imageDataTenTen = window.ctx.getImageData(
+//         250, 250, 1, 1,
+//       );
+      
+//       console.log("Img Data for 10,10: " + JSON.stringify(imageDataTenTen));
+      
+    
     this.neighborCoords.forEach(coord => {
       
-      console.log("Checking", 
-        coord[0] * SQUARE_SIZE,
-        coord[1] * SQUARE_SIZE);
+//       console.log("Checking ", 
+//         coord[0]
+//                   + ", " +
+//         coord[1]);
     
-      const imageData = this.ctx.getImageData(
+      const imageData = window.ctx.getImageData(
         coord[0] * SQUARE_SIZE,
         coord[1] * SQUARE_SIZE,
-        SQUARE_SIZE,
-        SQUARE_SIZE
+        1,
+        1
       );
-      if (imageData.data[0] > 0) {
-        console.log("The neighbor is filled");
+      
+      if (imageData["data"]["0"] > 0) {
         count += 1;
       }
     })
-    console.log("Num of filled neighbors for square " + this.x + ", " + this.y + ": " + count);
+    // console.log("Num of filled neighbors for square " + this.x + ", " + this.y + ": " + count);
+    return count;
   }
 
   checkFilledNeighbors() {
@@ -120,14 +146,3 @@ class Square {
     return neighborCoords;
   }
 }
-
-window.addEventListener('load', () => {
-  const canvas = document.getElementById("myCanvas");
-  const ctx = canvas.getContext("2d");
-  console.log("test", ctx);
-  (new Game(ctx)).start([
-    [9, 10],
-    [10, 10],
-    [11, 10]
-  ]);
-});
