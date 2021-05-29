@@ -16,13 +16,16 @@ window.addEventListener('load', () => {
     [11, 10]
   ]);
   
+  // setTimout(() => {
+  
+// })
   // setInterval(() => {
   //   game.tick();
   // }, 1000);
-  
+
   game.tick();
-  game.tick();
-  game.tick();
+//   game.tick();
+//   game.tick();
 
 });
 
@@ -36,7 +39,7 @@ class Game {
 
   start(seedCoords) {
     seedCoords.forEach(coord => {
-      const square = new Square(coord[0], coord[1], window.ctx);
+      const square = new Square(coord[0], coord[1]);
       square.fill();
       this.squares.push(square);
     });
@@ -50,6 +53,20 @@ class Game {
     //   const newSquare = new Square(coord[0], coord[1], window.ctx);
     //   newSquare.fill("pink");
     // });
+  }
+  
+  checkIfSquareShouldBeFilled(square) {
+    
+  }
+  
+  drawSquares() {
+    
+  }
+  
+  clearSquares() {
+    this.squares.forEach(square => 
+      square.clear();
+    );
   }
 
   tick() {
@@ -65,24 +82,31 @@ class Game {
       console.log(filledNeighbors, "neighbors");
       
       const copy = new Square(square.x, square.y);
+
       if (square.filled && (filledNeighbors === 2 || filledNeighbors === 3)) {
-        console.log("survive");
-        copy.fill();
-        squares_copy.push(copy);
+        // console.log("fill");
+        copy.filled = true;
       } else if (!square.filled && filledNeighbors === 3) {
-        console.log("fill");
-        copy.fill();
-        squares_copy.push(copy);
+        // console.log("fill");
+        copy.filled = true;
       } else {
-        console.log("clear");
-        squares_copy.push(copy);
+        // console.log("clear");
+        copy.filled = false;
       }
-      square.clear();
+      squares_copy.push(copy);
     });
+
     console.log("Squares copy:", squares_copy);
+    
+    this.squares.forEach(square => square.clear());
+
     this.squares = squares_copy;
     
-    
+    this.squares.forEach(square => {
+      if (square.filled) {
+        square.fill();
+      }
+    });
   }
   
   isCoordinateFilled(x, y) {
