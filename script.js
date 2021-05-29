@@ -11,8 +11,10 @@ window.addEventListener('load', () => {
   window.ctx = canvas.getContext("2d");
   const game = (new Game());
   game.start([
-    [9, 10],
+    [9, 9],
     [10, 10],
+    [10, 11],
+    [11, 9],
     [11, 10]
   ]);
   
@@ -26,7 +28,9 @@ window.addEventListener('load', () => {
 //   game.tick();
 //   game.tick();
 //   game.tick();
+//   game.tick();
 
+  // game.tick();
 });
 
 // Start w/ a seed
@@ -87,9 +91,6 @@ class Game {
   
 
   tick() {
-    // check for rules on the squares
-    // iterate over this.squares and copy into squares[]
-    // 
     const squares_copy = [];
     this.squares.forEach(square => {
       const copy = new Square(square.x, square.y);
@@ -103,8 +104,6 @@ class Game {
       });
     });
 
-    console.log("Squares copy:", squares_copy);
-    
     this.clearSquares();
     this.squares = squares_copy;
     this.drawSquares();
@@ -117,6 +116,7 @@ class Square {
     this.y = y;
     this.neighborCoords = this.calculateNeighborCoords();
     this.filled = false;
+    () => console.log("new square!");
   }
 
   fill(color = "pink") {
