@@ -6,7 +6,6 @@ This is your site JavaScript code - you can add interactivity and carry out proc
 // 20 x 20 squares of 25 by 25 px
 const SQUARE_SIZE = 25;
 
-
 // Start w/ a seed
 // Tick every 2 seconds or something
 class Game {
@@ -18,8 +17,19 @@ class Game {
   start() {
     // fillSquare(0, 0);
     // fillSquare(475, 475);
-    (new Square(0, 0, this.ctx)).fill();
-    console.log("in game", this.ctx);
+    // original
+    (new Square(2, 2, this.ctx)).fill();
+    
+    // neighbors
+    (new Square(1, 1, this.ctx)).fill("pink");
+    (new Square(1, 2, this.ctx)).fill("hotpink");
+    (new Square(2, 1, this.ctx)).fill("hotpink");
+    (new Square(3, 1, this.ctx)).fill("pink");
+    (new Square(1, 3, this.ctx)).fill("pink");
+    (new Square(3, 2, this.ctx)).fill("hotpink");
+    (new Square(2, 3, this.ctx)).fill("hotpink");
+   
+    (new Square(3, 3, this.ctx)).fill("pink");
   }
   
   tick() {
@@ -28,16 +38,22 @@ class Game {
 }
 
 class Square {
-  construct(x, y, ctx) {
-    console.log("in square", ctx);
+  constructor(x, y, ctx) {
     this.x = x;
     this.y = y;
+    this.neighbors = this.getNeighbors();
     this.ctx = ctx;
   }
   // properties: int x, int y, bool filled
   // array neighbors (of Squares)
-  fill() {
-    this.ctx.fillRect(this.x, this.y, SQUARE_SIZE, SQUARE_SIZE);
+  fill(color = "#000") {
+    this.ctx.fillStyle = color;
+    this.ctx.fillRect(
+      this.x * SQUARE_SIZE,
+      this.y * SQUARE_SIZE,
+      SQUARE_SIZE,
+      SQUARE_SIZE
+    );
   }
   
   checkFilledNeighbors() {
@@ -46,11 +62,15 @@ class Square {
     
     // return how many filled neighbors this square has
   }
+  
+  getNeighbors() {
+    // 
+  }
 }
 
 window.addEventListener('load', () => {
   const canvas = document.getElementById("myCanvas");
   const ctx = canvas.getContext("2d");
-  console.log(ctx);
+  console.log("test", ctx);
   (new Game(ctx)).start();
 });
