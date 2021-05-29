@@ -39,6 +39,7 @@ class Game {
   // Create the data of the squares and then set it 
   constructor(){
     this.squares = [];
+    this.squares_copy = [];
   }
 
   start(seedCoords) {
@@ -87,26 +88,28 @@ class Game {
       square.clear()
     );
   }
-  
-  
 
   tick() {
-    const squares_copy = [];
+    this.squares_copy = [];
+
     this.squares.forEach(square => {
       const copy = new Square(square.x, square.y);
       copy.filled = this.shouldFillSquare(square);
-      squares_copy.push(copy);
+      this.squares_copy.push(copy);
 
       square.neighborCoords.forEach(coord => {
         const neighborCopy = new Square(coord[0], coord[1]);
         neighborCopy.filled = this.shouldFillSquare(neighborCopy);
-        squares_copy.push(neighborCopy);
+        if (neighborCopy.filled) {
+          this.squares_copy.push(neighborCopy);
+        }
       });
     });
 
-    this.clearSquares();
-    this.squares = squares_copy;
-    this.drawSquares();
+    console.log(this.squares_copy.length);
+    // this.clearSquares();
+    // this.squares = this.squares_copy;
+    // this.drawSquares();
   }
 }
 
@@ -116,7 +119,6 @@ class Square {
     this.y = y;
     this.neighborCoords = this.calculateNeighborCoords();
     this.filled = false;
-    () => console.log("new square!");
   }
 
   fill(color = "pink") {
