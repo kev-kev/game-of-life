@@ -20,7 +20,9 @@ window.addEventListener('load', () => {
   //   game.tick();
   // }, 1000);
   
-  // game.tick();
+  game.tick();
+  game.tick();
+  game.tick();
 
 });
 
@@ -56,22 +58,31 @@ class Game {
     // check for rules on the squares
     // iterate over this.squares and copy into squares[]
     // 
-    const squares = [];
+    const squares_copy = [];
     this.squares.forEach(square => {
       const filledNeighbors = square.getFilledNeighbors();
       console.log(square.filled, "filled");
       console.log(filledNeighbors, "neighbors");
+      
+      const copy = new Square(square.x, square.y);
       if (square.filled && (filledNeighbors === 2 || filledNeighbors === 3)) {
         console.log("survive");
-        // survives
+        copy.fill();
+        squares_copy.push(copy);
       } else if (!square.filled && filledNeighbors === 3) {
         console.log("fill");
-        square.fill();
+        copy.fill();
+        squares_copy.push(copy);
       } else {
         console.log("clear");
-        square.clear();
+        squares_copy.push(copy);
       }
+      square.clear();
     });
+    console.log("Squares copy:", squares_copy);
+    this.squares = squares_copy;
+    
+    
   }
   
   isCoordinateFilled(x, y) {
