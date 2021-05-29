@@ -21,18 +21,18 @@ window.addEventListener('load', () => {
   // setTimout(() => {
   
 // })
-  // setInterval(() => {
-  //   game.tick();
-  // }, 1000);
-
-//   game.tick();
-//   game.tick();
-//   game.tick();
-//   game.tick();
-
-  for(let i = 0 ; i < 4; i++ ) {
+  setInterval(() => {
     game.tick();
-  }
+  }, 1000);
+
+//   game.tick();
+//   game.tick();
+//   game.tick();
+//   game.tick();
+
+  // for(let i = 0 ; i < 4; i++ ) {
+  //   game.tick();
+  // }
 });
 
 // Start w/ a seed
@@ -46,12 +46,10 @@ class Game {
 
   start(seedCoords) {
     seedCoords.forEach(coord => {
-      const square = {x: coord[0], y: coord[1], filled: false};
+      const square = {x: coord[0], y: coord[1], coord: coord, filled: true};
       this.squares.push(square);
-      square.filled = true;
     });
     this.drawSquares();
-    
     
     // our tester
     // const square = new Square(2, 2, window.ctx);
@@ -96,40 +94,42 @@ class Game {
     console.log("Start of tick: ", this.squaresCopy.length);
 
     this.squares.forEach(square => {
-      const copy = {x: square.x, y: square.y, filled: false};
+      const copy = {x: square.x, y: square.y, coord: [square.x, square.y], filled: false};
       copy.filled = this.shouldFillSquare(square.x, square.y, square.filled);
       if (copy.filled) {
         this.squaresCopy.push(copy);
       }
 
-      square.neighborCoords.forEach(coord => {
-        const neighborCopy = {x: coord[0], y: coord[1], filled: false};
+      const neighborCoords = calculateNeighborCoords(square.x, square.y);
+      neighborCoords.forEach(coord => {
+        const neighborCopy = {x: coord[0], y: coord[1], coord: coord, filled: false};
         neighborCopy.filled = this.shouldFillSquare(neighborCopy.x, neighborCopy.y, neighborCopy.filled);
         if (neighborCopy.filled) {
           this.squaresCopy.push(neighborCopy);
         }
       });
     });
+    
 
-    this.squaresCopy = [... new Set(this.squaresCopy)];
     // Get unique squaresCopy
+    
+    this.squaresCopy = [... new Set(this.squaresCopy.map(square => square.coord))];
     console.log("End of tick: "  + this.squaresCopy.length);
     console.log(this.squares.length);
-    // this.clearSquares();
+    this.clearSquares();
     this.squares = this.squaresCopy;
-    // this.drawSquares();
+    this.drawSquares();
   }
 }
 
   const fillSquare = (x, y, color = "pink") => {
     window.ctx.fillStyle = color;
     window.ctx.fillRect(
-      this.x * SQUARE_SIZE,
-      this.y * SQUARE_SIZE,
+      x * SQUARE_SIZE,
+      y * SQUARE_SIZE,
       SQUARE_SIZE,
       SQUARE_SIZE
     );
-    this.filled = true;
   }
   
   const clearSquare = (x, y) => {
