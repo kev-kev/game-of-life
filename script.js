@@ -21,16 +21,18 @@ window.addEventListener('load', () => {
   // setTimout(() => {
   
 // })
-  setInterval(() => {
+  // setInterval(() => {
+  //   game.tick();
+  // }, 1000);
+
+//   game.tick();
+//   game.tick();
+//   game.tick();
+//   game.tick();
+
+  for(let i = 0 ; i < 4; i++ ) {
     game.tick();
-  }, 1000);
-
-//   game.tick();
-//   game.tick();
-//   game.tick();
-//   game.tick();
-
-  // game.tick();
+  }
 });
 
 // Start w/ a seed
@@ -44,7 +46,7 @@ class Game {
 
   start(seedCoords) {
     seedCoords.forEach(coord => {
-      const square = new Square(coord[0], coord[1]);
+      const square = {x: coord[0], y: coord[1], filled: false};
       this.squares.push(square);
       square.filled = true;
     });
@@ -61,12 +63,12 @@ class Game {
     // });
   }
   
-  shouldFillSquare(square) {
-      const filledNeighbors = square.getFilledNeighbors();
-      if (square.filled && (filledNeighbors === 2 || filledNeighbors === 3)) {
+  shouldFillSquare(x, y, isFilled) {
+      const filledNeighbors = getFilledNeighbors(x, y);
+      if (isFilled && (filledNeighbors === 2 || filledNeighbors === 3)) {
         // console.log("fill");
         return true;
-      } else if (!square.filled && filledNeighbors === 3) {
+      } else if (!isFilled && filledNeighbors === 3) {
         // console.log("fill");
         return true;
       } else {
@@ -78,14 +80,14 @@ class Game {
   drawSquares() {
    this.squares.forEach(square => {
      if(square.filled) {
-       square.fill();
+       fillSquare(square.x, square.y);
      }
    });
   }
 
   clearSquares() {
     this.squares.forEach(square => 
-      square.clear()
+      clearSquare(square.x, square.y)
     );
   }
 
@@ -94,15 +96,15 @@ class Game {
     console.log("Start of tick: ", this.squaresCopy.length);
 
     this.squares.forEach(square => {
-      const copy = new Square(square.x, square.y);
-      copy.filled = this.shouldFillSquare(square);
+      const copy = {x: square.x, y: square.y, filled: false};
+      copy.filled = this.shouldFillSquare(square.x, square.y, square.filled);
       if (copy.filled) {
-        this.squaresCopy.push(copy);      
+        this.squaresCopy.push(copy);
       }
 
       square.neighborCoords.forEach(coord => {
-        const neighborCopy = new Square(coord[0], coord[1]);
-        neighborCopy.filled = this.shouldFillSquare(neighborCopy);
+        const neighborCopy = {x: coord[0], y: coord[1], filled: false};
+        neighborCopy.filled = this.shouldFillSquare(neighborCopy.x, neighborCopy.y, neighborCopy.filled);
         if (neighborCopy.filled) {
           this.squaresCopy.push(neighborCopy);
         }
@@ -110,6 +112,7 @@ class Game {
     });
 
     this.squaresCopy = [... new Set(this.squaresCopy)];
+    // Get unique squaresCopy
     console.log("End of tick: "  + this.squaresCopy.length);
     console.log(this.squares.length);
     // this.clearSquares();
@@ -118,15 +121,7 @@ class Game {
   }
 }
 
-class Square {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.neighborCoords = this.calculateNeighborCoords();
-    this.filled = false;
-  }
-
-  fill(color = "pink") {
+  const fillSquare = (x, y, color = "pink") => {
     window.ctx.fillStyle = color;
     window.ctx.fillRect(
       this.x * SQUARE_SIZE,
@@ -137,17 +132,17 @@ class Square {
     this.filled = true;
   }
   
-  clear() {
+  const clearSquare = (x, y) => {
     window.ctx.clearRect(
-      this.x * SQUARE_SIZE,
-      this.y * SQUARE_SIZE,
+      x * SQUARE_SIZE,
+      y * SQUARE_SIZE,
       SQUARE_SIZE,
       SQUARE_SIZE
     );
     this.filled = false;
   }
   
-  getFilledNeighbors() {
+  const getFilledNeighbors = (x, y) => {
     let count = 0;
     
     
@@ -157,8 +152,9 @@ class Square {
       
 //       console.log("Img Data for 10,10: " + JSON.stringify(imageDataTenTen));
       
-    this.neighborCoords.forEach(coord => {
-      if (this.isCoordinateFilled(coord[0], coord[1])) {
+    const neighborCoords = calculateNeighborCoords(x, y);
+    neighborCoords.forEach(coord => {
+      if (isCoordinateFilled(coord[0], coord[1])) {
         count += 1;
       }
     });
@@ -166,19 +162,12 @@ class Square {
     return count;
   }
 
-  checkFilledNeighbors() {
-    // iterate over this.neighbors to count
-    // how many filled
-    
-    // return how many filled neighbors this square has
-  }
-  
-  calculateNeighborCoords() {
+  const calculateNeighborCoords = (squareX, squareY) => {
     const neighborCoords = [];
-    for(let y = this.y - 1; y < this.y + 2; y++) {
-      for(let x = this.x - 1; x < this.x + 2; x++) {
+    for(let y = squareY - 1; y < squareY + 2; y++) {
+      for(let x = squareX - 1; x < squareX + 2; x++) {
         // skip if we're on the current square, or if x/y is negative
-        if ((x === this.x && y === this.y) || x < 0 || y < 0) {
+        if ((x === squareX && y === squareY) || x < 0 || y < 0) {
           continue;
         }
         neighborCoords.push([x, y]);
@@ -188,7 +177,7 @@ class Square {
   }
   
   
-  isCoordinateFilled(x, y) {
+  const isCoordinateFilled = (x, y) => {
     const imageData = window.ctx.getImageData(
         x * SQUARE_SIZE,
         y * SQUARE_SIZE,
@@ -198,4 +187,3 @@ class Square {
       
     return imageData["data"]["0"] > 0;
   }
-}
