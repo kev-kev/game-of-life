@@ -3,8 +3,8 @@ This is your site JavaScript code - you can add interactivity and carry out proc
 - Initially the JS writes a message to the console, and rotates a button you can add from the README
 */
 // 500x500 canvas
-// 20 x 20 squares of 25 by 25 px
-const SQUARE_SIZE = 25;
+// 25 x 25 squares of 20 by 20 px
+const SQUARE_SIZE = 20;
 const SEED_2 = [
     [9, 9],
     [10, 10],
@@ -13,23 +13,46 @@ const SEED_2 = [
     [11, 10]
   ];
 const SEED_PULSAR = [
-  []
+  [6, 8],
+  [6, 9],
+  [6, 10],
+  [6, 14],
+  [6, 15],
+  [6, 16],
+  [11, 8],
+  [11, 9],
+  [11, 10],
+  [11, 14],
+  [11, 15],
+  [11, 16],
+  [13, 8],
+  [13, 9],
+  [13, 10],
+  [13, 14],
+  [13, 15],
+  [13, 16],
+  [18, 8],
+  [18, 9],
+  [18, 10],
+  [18, 14],
+  [18, 15],
+  [18, 16],
 ];
 
 window.addEventListener('load', () => {
   const canvas = document.getElementById("myCanvas");
   window.ctx = canvas.getContext("2d");
   const game = (new Game());
-  game.start(SEED_2);
+  game.start(SEED_PULSAR);
   
   // setTimout(() => {
   
 // })
-  setInterval(() => {
-    game.tick();
-  }, 1000);
+  // setInterval(() => {
+  //   game.tick();
+  // }, 1000);
 
-//   game.tick();
+  game.tick();
 //   game.tick();
 //   game.tick();
 //   game.tick();
