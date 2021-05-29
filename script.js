@@ -18,8 +18,11 @@ class Game {
     seedCoords.forEach(coord => {
       const square = new Square(coord[0], coord[1], this.ctx);
       square.fill();
+      square.getFilledNeighbors();
       this.squares.push(square);
     });
+    
+    
     
     // our tester
     // const square = new Square(2, 2, this.ctx);
@@ -29,15 +32,20 @@ class Game {
     //   const newSquare = new Square(coord[0], coord[1], this.ctx);
     //   newSquare.fill("pink");
     // });
+    // setTimeout(this.tick(), 1000);
   }
 
   tick() {
     // check for rules on the squares
     this.squares.forEach(square => {
       const filledNeighbors = square.getFilledNeighbors();
-      if (filledNeighbors === 2 || filledNeighbors === 3) {
+      if (square.filled && (filledNeighbors === 2 || filledNeighbors === 3)) {
         // survives
-      } 
+      } else if (!square.filled && filledNeighbors === 3) {
+        square.fill();
+      } else {
+        square.clear();
+      }
     });
   }
 }
@@ -51,7 +59,7 @@ class Square {
   }
   // properties: int x, int y, bool filled
   // array neighbors (of Squares)
-  fill(color = "#000") {
+  fill(color = "pink") {
     this.ctx.fillStyle = color;
     this.ctx.fillRect(
       this.x * SQUARE_SIZE,
@@ -67,6 +75,28 @@ class Square {
       this.y * SQUARE_SIZE,
       SQUARE_SIZE
     );
+  }
+  
+  getFilledNeighbors() {
+    let count = 0;
+    this.neighborCoords.forEach(coord => {
+      
+      console.log("Checking", 
+        coord[0] * SQUARE_SIZE,
+        coord[1] * SQUARE_SIZE);
+    
+      const imageData = this.ctx.getImageData(
+        coord[0] * SQUARE_SIZE,
+        coord[1] * SQUARE_SIZE,
+        SQUARE_SIZE,
+        SQUARE_SIZE
+      );
+      if (imageData.data[0] > 0) {
+        console.log("The neighbor is filled");
+        count += 1;
+      }
+    })
+    console.log("Num of filled neighbors for square " + this.x + ", " + this.y + ": " + count);
   }
 
   checkFilledNeighbors() {
