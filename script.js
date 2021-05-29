@@ -11,7 +11,7 @@ const SEED_2 = [
     [10, 11],
     [11, 9],
     [11, 10]
-  ];
+];
 const SEED_PULSAR = [
   [6, 8],
   [6, 9],
@@ -66,7 +66,6 @@ const SEED_PULSAR = [
   [14, 18],
   [15, 18],
   [16, 18],
-  
 ];
 
 window.addEventListener('load', () => {
@@ -74,19 +73,11 @@ window.addEventListener('load', () => {
   window.ctx = canvas.getContext("2d");
   const game = (new Game());
   game.start(SEED_PULSAR);
-  
-// //   
+
   setInterval(() => game.tick(), 200);
-  
-//   for(let i = 0 ; i < 2; i++ ) {
-//     game.tick();
-//   }
 });
 
-// Start w/ a seed
-// Tick every 2 seconds or something
 class Game {
-  // Create the data of the squares and then set it 
   constructor(){
     this.squares = [];
     this.squaresCopy = [];
@@ -99,7 +90,7 @@ class Game {
     });
     this.drawSquares();
   }
-  
+
   shouldFillSquare(x, y, isFilled) {
       const filledNeighbors = getFilledNeighbors(x, y);
       if (isFilled && (filledNeighbors === 2 || filledNeighbors === 3)) {
@@ -160,13 +151,16 @@ class Game {
 
   const containsSquareAlready = (obj, squaresCopy) => {
     let contains = false;
-    squaresCopy.forEach(square => {
-      // console.log("Comparing: ", JSON.stringify(obj), JSON.stringify(square));
-      if (square.x === obj.x && square.y == obj.y) {
-        contains = true;
-      }
-    });
-    // contains === false ? console.log("me falsey") : console.log("me truthy");
+//     squaresCopy.forEach(square => {
+//       if (square.x === obj.x && square.y == obj.y) {
+//         contains = true;
+//       }
+      
+//     });
+    
+    for (let i = 0; i < squaresCopy.length; i++) {
+      if (squaresCo)
+    }
     return contains;
   }
 
