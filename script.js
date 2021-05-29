@@ -54,9 +54,9 @@ class Game {
     console.log("ticking");
     console.log(this.squares);
     // check for rules on the squares
-    // copy this.squares- iterate through this.squares changing filled state in the copy. 
-    // then overwrite this.squares with the copy   
-    const squares = this.squares
+    // iterate over this.squares and copy into squares[]
+    // 
+    const squares = [];
     this.squares.forEach(square => {
       const filledNeighbors = square.getFilledNeighbors();
       console.log(square.filled, "filled");
