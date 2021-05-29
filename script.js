@@ -26,18 +26,19 @@ class Game {
     // fillSquare(0, 0);
     // fillSquare(475, 475);
     // original
-    (new Square(2, 2, this.ctx)).fill();
-    
+    const square = new Square(2, 2, this.ctx);
+    square.fill();
+    square.getNeighbors();
     // neighbors
-    (new Square(1, 1, this.ctx)).fill("pink");
-    (new Square(1, 3, this.ctx)).fill("pink");
-    (new Square(3, 1, this.ctx)).fill("pink");
-    (new Square(3, 3, this.ctx)).fill("pink");
+//     (new Square(1, 1, this.ctx)).fill("pink");
+//     (new Square(1, 3, this.ctx)).fill("pink");
+//     (new Square(3, 1, this.ctx)).fill("pink");
+//     (new Square(3, 3, this.ctx)).fill("pink");
     
-    (new Square(1, 2, this.ctx)).fill("hotpink");
-    (new Square(2, 1, this.ctx)).fill("hotpink");
-    (new Square(2, 3, this.ctx)).fill("hotpink");
-    (new Square(3, 2, this.ctx)).fill("hotpink").clear();
+//     (new Square(1, 2, this.ctx)).fill("hotpink");
+//     (new Square(2, 1, this.ctx)).fill("hotpink");
+//     (new Square(2, 3, this.ctx)).fill("hotpink");
+//     (new Square(3, 2, this.ctx)).fill("hotpink").clear();
   }
   
   getSquare(x, y) {
@@ -53,7 +54,6 @@ class Square {
   constructor(x, y, ctx) {
     this.x = x;
     this.y = y;
-    this.neighborCoords = this.getNeighbors();
     this.ctx = ctx;
   }
   // properties: int x, int y, bool filled
@@ -86,14 +86,17 @@ class Square {
   getNeighbors() {
     this.neighborCoords = [];
     
-    for(let y = this.y - 1; y < y + 2; y ++) {
+    for(let y = this.y - 1; y < y + 2; y++) {
       for(let x = this.x - 1; x < x + 2; x++) {
-        if (x == this.x && y == this.y) {
-          continue
+        // skip if we're on the current square, or if x/y is negative
+        if ((x === this.x && y === this.y) || x < 0 || y < 0) {
+          continue;
         }
-        if (x <)
+        this.neighborCoords.push([x, y]);
       }
     }
+
+    console.log("neighbors", this.neighborCoords);
   }
 }
 
