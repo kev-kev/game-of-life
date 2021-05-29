@@ -19,11 +19,11 @@ window.addEventListener('load', () => {
   // setTimout(() => {
   
 // })
-  // setInterval(() => {
-  //   game.tick();
-  // }, 1000);
+  setInterval(() => {
+    game.tick();
+  }, 1000);
 
-  game.tick();
+//   game.tick();
 //   game.tick();
 //   game.tick();
 
@@ -40,9 +40,10 @@ class Game {
   start(seedCoords) {
     seedCoords.forEach(coord => {
       const square = new Square(coord[0], coord[1]);
-      square.fill();
       this.squares.push(square);
+      square.filled = true;
     });
+    this.drawSquares();
     
     
     // our tester
@@ -55,69 +56,58 @@ class Game {
     // });
   }
   
-  checkIfSquareShouldBeFilled(square) {
-    
-  }
-  
-  drawSquares() {
-    
-  }
-  
-  clearSquares() {
-    this.squares.forEach(square => 
-      square.clear();
-    );
+  shouldFillSquare(square) {
+      const filledNeighbors = square.getFilledNeighbors();
+      if (square.filled && (filledNeighbors === 2 || filledNeighbors === 3)) {
+        // console.log("fill");
+        return true;
+      } else if (!square.filled && filledNeighbors === 3) {
+        // console.log("fill");
+        return true;
+      } else {
+        // console.log("clear");
+        return false;
+      }
   }
 
+  drawSquares() {
+   this.squares.forEach(square => {
+     if(square.filled) {
+       square.fill();
+     }
+   });
+  }
+
+  clearSquares() {
+    this.squares.forEach(square => 
+      square.clear()
+    );
+  }
+  
+  
+
   tick() {
-    console.log("ticking");
-    console.log(this.squares);
     // check for rules on the squares
     // iterate over this.squares and copy into squares[]
     // 
     const squares_copy = [];
     this.squares.forEach(square => {
-      const filledNeighbors = square.getFilledNeighbors();
-      console.log(square.filled, "filled");
-      console.log(filledNeighbors, "neighbors");
-      
       const copy = new Square(square.x, square.y);
-
-      if (square.filled && (filledNeighbors === 2 || filledNeighbors === 3)) {
-        // console.log("fill");
-        copy.filled = true;
-      } else if (!square.filled && filledNeighbors === 3) {
-        // console.log("fill");
-        copy.filled = true;
-      } else {
-        // console.log("clear");
-        copy.filled = false;
-      }
+      copy.filled = this.shouldFillSquare(square);
       squares_copy.push(copy);
+
+      square.neighborCoords.forEach(coord => {
+        const neighborCopy = new Square(coord[0], coord[1]);
+        neighborCopy.filled = this.shouldFillSquare(neighborCopy);
+        squares_copy.push(neighborCopy);
+      });
     });
 
     console.log("Squares copy:", squares_copy);
     
-    this.squares.forEach(square => square.clear());
-
+    this.clearSquares();
     this.squares = squares_copy;
-    
-    this.squares.forEach(square => {
-      if (square.filled) {
-        square.fill();
-      }
-    });
-  }
-  
-  isCoordinateFilled(x, y) {
-    const imageData = window.ctx.getImageData(
-        x * SQUARE_SIZE,
-        y * SQUARE_SIZE,
-        1,
-        1
-    );
-      
-    return imageData["data"]["0"] > 0;
+    this.drawSquares();
   }
 }
 
@@ -160,25 +150,11 @@ class Square {
       
 //       console.log("Img Data for 10,10: " + JSON.stringify(imageDataTenTen));
       
-    
     this.neighborCoords.forEach(coord => {
-      
-//       console.log("Checking ", 
-//         coord[0]
-//                   + ", " +
-//         coord[1]);
-    
-      const imageData = window.ctx.getImageData(
-        coord[0] * SQUARE_SIZE,
-        coord[1] * SQUARE_SIZE,
-        1,
-        1
-      );
-      
-      if (imageData["data"]["0"] > 0) {
+      if (this.isCoordinateFilled(coord[0], coord[1])) {
         count += 1;
       }
-    })
+    });
     // console.log("Num of filled neighbors for square " + this.x + ", " + this.y + ": " + count);
     return count;
   }
@@ -202,5 +178,17 @@ class Square {
       }
     }
     return neighborCoords;
+  }
+  
+  
+  isCoordinateFilled(x, y) {
+    const imageData = window.ctx.getImageData(
+        x * SQUARE_SIZE,
+        y * SQUARE_SIZE,
+        1,
+        1
+    );
+      
+    return imageData["data"]["0"] > 0;
   }
 }
