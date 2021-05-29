@@ -11,10 +11,18 @@ const SQUARE_SIZE = 25;
 class Game {
   constructor(ctx){
     this.ctx = ctx;
+    this.squares = {};
     // new Square() based off the seed
+    
   }
 
   start() {
+    for(let i = 0; i < 20; i++) {
+      for (let j = 0; j < 20; j++) {
+        
+      }
+    }
+    
     // fillSquare(0, 0);
     // fillSquare(475, 475);
     // original
@@ -22,14 +30,18 @@ class Game {
     
     // neighbors
     (new Square(1, 1, this.ctx)).fill("pink");
+    (new Square(1, 3, this.ctx)).fill("pink");
+    (new Square(3, 1, this.ctx)).fill("pink");
+    (new Square(3, 3, this.ctx)).fill("pink");
+    
     (new Square(1, 2, this.ctx)).fill("hotpink");
     (new Square(2, 1, this.ctx)).fill("hotpink");
-    (new Square(3, 1, this.ctx)).fill("pink");
-    (new Square(1, 3, this.ctx)).fill("pink");
-    (new Square(3, 2, this.ctx)).fill("hotpink");
     (new Square(2, 3, this.ctx)).fill("hotpink");
-   
-    (new Square(3, 3, this.ctx)).fill("pink");
+    (new Square(3, 2, this.ctx)).fill("hotpink").clear();
+  }
+  
+  getSquare(x, y) {
+    // returns the Square at x y
   }
   
   tick() {
@@ -56,6 +68,14 @@ class Square {
     );
   }
   
+  clear() {
+    this.ctx.clearRect(
+      this.x * SQUARE_SIZE,
+      this.y * SQUARE_SIZE,
+      SQUARE_SIZE
+    );
+  }
+
   checkFilledNeighbors() {
     // iterate over this.neighbors to count
     // how many filled
@@ -64,7 +84,9 @@ class Square {
   }
   
   getNeighbors() {
-    // 
+    this.neighbors = [
+      
+    ];
   }
 }
 
