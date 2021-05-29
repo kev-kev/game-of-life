@@ -21,18 +21,18 @@ window.addEventListener('load', () => {
   // setTimout(() => {
   
 // })
-  setInterval(() => {
-    game.tick();
-  }, 1000);
-
-//   game.tick();
-//   game.tick();
-//   game.tick();
-//   game.tick();
-
-  // for(let i = 0 ; i < 4; i++ ) {
+  // setInterval(() => {
   //   game.tick();
-  // }
+  // }, 1000);
+
+//   game.tick();
+//   game.tick();
+//   game.tick();
+//   game.tick();
+
+  for(let i = 0 ; i < 4; i++ ) {
+    game.tick();
+  }
 });
 
 // Start w/ a seed
@@ -46,7 +46,7 @@ class Game {
 
   start(seedCoords) {
     seedCoords.forEach(coord => {
-      const square = {x: coord[0], y: coord[1], coord: coord, filled: true};
+      const square = {x: coord[0], y: coord[1], filled: true};
       this.squares.push(square);
     });
     this.drawSquares();
@@ -96,15 +96,17 @@ class Game {
     this.squares.forEach(square => {
       const copy = {x: square.x, y: square.y, coord: [square.x, square.y], filled: false};
       copy.filled = this.shouldFillSquare(square.x, square.y, square.filled);
-      if (copy.filled) {
+      if (copy.filled && !containsSquareAlready(copy, this.squaresCopy)) {
         this.squaresCopy.push(copy);
       }
 
       const neighborCoords = calculateNeighborCoords(square.x, square.y);
       neighborCoords.forEach(coord => {
-        const neighborCopy = {x: coord[0], y: coord[1], coord: coord, filled: false};
+        const neighborCopy = {x: coord[0], y: coord[1], filled: false};
         neighborCopy.filled = this.shouldFillSquare(neighborCopy.x, neighborCopy.y, neighborCopy.filled);
-        if (neighborCopy.filled) {
+        if (neighborCopy.filled && !containsSquareAlready(neighborCopy, this.squaresCopy)) {
+          console.log("Checking: " + JSON.stringify(neighborCopy) + " in " + JSON.stringify(this.squaresCopy));
+          console.log("Contains square already: ", containsSquareAlready(neighborCopy, this.squaresCopy));
           this.squaresCopy.push(neighborCopy);
         }
       });
@@ -112,15 +114,26 @@ class Game {
     
 
     // Get unique squaresCopy
+    // console.log(JSON.stringify([... new Set(this.squaresCopy.map(square => square.coord))]));
     
-    this.squaresCopy = [... new Set(this.squaresCopy.map(square => square.coord))];
-    console.log("End of tick: "  + this.squaresCopy.length);
-    console.log(this.squares.length);
+//     console.log(this.squaresCopy);
+
+    // console.log("End of tick: "  + this.squaresCopy.length);
+    // console.log(this.squares.length);
     this.clearSquares();
     this.squares = this.squaresCopy;
     this.drawSquares();
   }
 }
+
+  const containsSquareAlready = (obj, squaresCopy) => {
+    squaresCopy.forEach(square => {
+      if (square.x === obj.x && square.y == obj.y) {
+        return true;
+      }
+    });
+    return false;
+  }
 
   const fillSquare = (x, y, color = "pink") => {
     window.ctx.fillStyle = color;
@@ -144,21 +157,13 @@ class Game {
   
   const getFilledNeighbors = (x, y) => {
     let count = 0;
-    
-    
-//       const imageDataTenTen = window.ctx.getImageData(
-//         250, 250, 1, 1,
-//       );
-      
-//       console.log("Img Data for 10,10: " + JSON.stringify(imageDataTenTen));
-      
     const neighborCoords = calculateNeighborCoords(x, y);
+    
     neighborCoords.forEach(coord => {
       if (isCoordinateFilled(coord[0], coord[1])) {
         count += 1;
       }
     });
-    // console.log("Num of filled neighbors for square " + this.x + ", " + this.y + ": " + count);
     return count;
   }
 
